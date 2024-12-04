@@ -4,6 +4,7 @@
   "description": "Database Manager with optional encryption for SQLite in the browser.",
   "main": "dist/sqljs-manager.cjs.js",
   "module": "dist/sqljs-manager.es.js",
+  "files": ["dist"],
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "vite build",
