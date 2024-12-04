@@ -39,6 +39,10 @@ yarn add your-database-package-name
    - Upload database dumps to a server.
    - Easily handle serialized data for server communication.
 
+5. **Local Storage Support**:
+   - Save encrypted database dumps to IndexedDB for persistence.
+   - Load database dumps from IndexedDB for seamless offline operation.
+
 ---
 
 ## **Usage**
@@ -101,7 +105,21 @@ await importDump(dbManager, plainDump); // Import plain dump
 
 ---
 
-### **4. Upload Database to Server**
+### **4. Save and Load Database to/from IndexedDB**
+
+#### Save Encrypted Database to IndexedDB
+```typescript
+await dbManager.saveToLocalStorage(); // Saves the encrypted database dump to IndexedDB
+```
+
+#### Load Encrypted Database from IndexedDB
+```typescript
+await dbManager.loadFromLocalStorage("secure-password"); // Loads the encrypted dump
+```
+
+---
+
+### **5. Upload Database to Server**
 
 Upload a database dump to a server endpoint:
 
@@ -113,7 +131,7 @@ await uploadDatabaseToServer(dbManager, "https://your-server.com");
 
 ---
 
-### **5. Server Integration Example**
+### **6. Server Integration Example**
 
 On the server, handle both plain and encrypted database dumps. Example using Node.js with Express:
 
@@ -153,6 +171,10 @@ app.listen(3000, () => console.log("Server running on port 3000"));
   - Exports the database dump (plain or encrypted).
 - `importDatabase(dump: Uint8Array | { iv: Uint8Array; encrypted: Uint8Array }): Promise<void>`
   - Imports a database dump.
+- `saveToLocalStorage(): Promise<void>`
+  - Saves an encrypted database dump to IndexedDB.
+- `loadFromLocalStorage(password: string): Promise<void>`
+  - Loads an encrypted database dump from IndexedDB.
 
 #### **`EncryptionManager`**
 - `generateKey(): Promise<void>`
