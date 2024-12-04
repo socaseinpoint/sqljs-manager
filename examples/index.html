@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Manager Demo</title>
+  <script type="module">
+    import { DatabaseManager } from 'https://cdn.jsdelivr.net/npm/sqljs-manager/dist/index.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const output = document.getElementById('output');
+      const executeButton = document.getElementById('execute');
+      const exportButton = document.getElementById('export');
+
+      const dbManager = new DatabaseManager();
+
+      // Initialize database
+      await dbManager.execute(`
+        CREATE TABLE IF NOT EXISTS expenses (
+          id INTEGER PRIMARY KEY,
+          date TEXT,
+          amount REAL
+        )
+      `);
+      output.innerText += "Database initialized.\n";
+
+      executeButton.addEventListener('click', async () => {
+        // Insert sample data
+        await dbManager.execute("INSERT INTO expenses (date, amount) VALUES (?, ?)", [
+          new Date().toISOString().split('T')[0],
+          Math.floor(Math.random() * 100),
+        ]);
+
+        // Query data
+        const results = await dbManager.execute("SELECT * FROM expenses");
+        output.innerText += `Results: ${JSON.stringify(results, null, 2)}\n`;
+      });
+
+      exportButton.addEventListener('click', async () => {
+        // Export database
+        const dump = await dbManager.exportDatabase();
+        output.innerText += `Exported database: ${dump.byteLength} bytes\n`;
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>Database Manager Demo</h1>
+  <button id="execute">Insert & Query Data</button>
+  <button id="export">Export Database</button>
+  <pre id="output" style="border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto;"></pre>
+</body>
+</html>
