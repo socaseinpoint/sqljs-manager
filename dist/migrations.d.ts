@@ -1,4 +1,4 @@
-import { DatabaseManager } from './databaseManager';
+import { DatabaseManager } from "./databaseManager";
 export interface Migration {
     version: number;
     queries: string[];

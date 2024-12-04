@@ -1,4 +1,4 @@
-import { EncryptionManager } from './encryption';
+import { EncryptionManager } from "./encryption";
 export declare class DatabaseManager {
     private db;
     protected encryptionManager: EncryptionManager | null;

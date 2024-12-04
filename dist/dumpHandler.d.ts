@@ -1,5 +1,5 @@
-import { DatabaseManager } from './databaseManager';
-import { EncryptionManager } from './encryption';
+import { DatabaseManager } from "./databaseManager";
+import { EncryptionManager } from "./encryption";
 export declare function exportDump(dbManager: DatabaseManager, encryptionManager?: EncryptionManager): Promise<{
     iv: Uint8Array;
     encrypted: Uint8Array;

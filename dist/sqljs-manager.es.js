@@ -1,5 +1,5 @@
 import p from "sql.js";
-class u {
+class d {
   constructor() {
     this.key = null;
   }
@@ -64,16 +64,17 @@ class u {
     }
   }
 }
-class b {
+class w {
   constructor(e = !1) {
-    this.db = null, this.encryptionManager = e ? new u() : null;
+    this.db = null, this.encryptionManager = e ? new d() : null;
   }
   async initialize(e) {
     const t = await p();
     this.db = new t.Database(), this.encryptionManager && await this.encryptionManager.generateKey(), e.forEach((r) => this.db.run(r));
   }
   execute(e, t = []) {
-    if (!this.db) throw new Error("Database not initialized.");
+    if (!this.db)
+      throw new Error("Database not initialized.");
     return this.db.exec(e, t);
   }
   async exportDatabase() {
@@ -91,40 +92,40 @@ class b {
     this.db = new r.Database(t);
   }
 }
-async function f(n, e) {
+async function b(n, e) {
   var r;
   const t = ((r = n.execute(`
     SELECT MAX(version) as version FROM schema_version
   `)[0]) == null ? void 0 : r.values[0][0]) || 0;
-  for (const s of e)
-    s.version > t && (s.queries.forEach((c) => n.execute(c)), n.execute(
+  for (const a of e)
+    a.version > t && (a.queries.forEach((i) => n.execute(i)), n.execute(
       "INSERT INTO schema_version (version) VALUES (?)",
-      [s.version]
+      [a.version]
     ));
 }
-async function h(n, e) {
+async function u(n, e) {
   const t = await n.exportDatabase();
   if (e) {
-    const { iv: r, encrypted: s } = await e.encrypt(t);
-    return { iv: r, encrypted: s };
+    const { iv: r, encrypted: a } = await e.encrypt(t);
+    return { iv: r, encrypted: a };
   }
   return t;
 }
-function y(n) {
+function c(n) {
   return typeof n == "object" && "iv" in n && "encryptedDump" in n;
 }
-async function m(n, e, t) {
+async function h(n, e, t) {
   let r;
-  t && y(e) ? r = await t.decrypt({
+  t && c(e) ? r = await t.decrypt({
     iv: e.iv,
     encrypted: e.encryptedDump
     // Use `encryptedDump` here
   }) : r = e, await n.importDatabase(r);
 }
-async function D(n, e) {
-  const t = await h(n);
+async function g(n, e) {
+  const t = await u(n);
   let r;
-  y(t) ? r = JSON.stringify({
+  c(t) ? r = JSON.stringify({
     iv: Array.from(t.iv),
     // Convert Uint8Array to array for JSON
     encrypted: Array.from(t.encrypted)
@@ -132,16 +133,16 @@ async function D(n, e) {
   }) : r = t, await fetch(`${e}/upload`, {
     method: "POST",
     headers: {
-      "Content-Type": y(t) ? "application/json" : "application/octet-stream"
+      "Content-Type": c(t) ? "application/json" : "application/octet-stream"
     },
     body: r
   });
 }
-async function g(n, e) {
+async function f(n, e) {
   const r = await (await fetch(`${e}/download`)).arrayBuffer();
-  await m(n, new Uint8Array(r));
+  await h(n, new Uint8Array(r));
 }
-const a = class a {
+class y {
   /**
    * Ensures the database and object store are properly initialized.
    */
@@ -151,12 +152,12 @@ const a = class a {
       const r = indexedDB.open(this.dbName, this.dbVersion);
       r.onupgradeneeded = () => {
         console.log("Upgrade needed. Creating or verifying object store...");
-        const s = r.result;
-        s.objectStoreNames.contains(this.storeName) || s.createObjectStore(this.storeName, { keyPath: "key" });
+        const a = r.result;
+        a.objectStoreNames.contains(this.storeName) || a.createObjectStore(this.storeName, { keyPath: "key" });
       }, r.onsuccess = () => {
         console.log("Database initialized successfully."), e(r.result);
-      }, r.onerror = (s) => {
-        console.error("Error initializing database:", s), t(s);
+      }, r.onerror = (a) => {
+        console.error("Error initializing database:", a), t(a);
       };
     });
   }
@@ -166,12 +167,12 @@ const a = class a {
   static async saveEncryptedDump(e) {
     console.log("Saving with key: 'encryptedDump'");
     const t = await this.initialize();
-    return new Promise((r, s) => {
+    return new Promise((r, a) => {
       const o = t.transaction(this.storeName, "readwrite").objectStore(this.storeName).put({ key: "encryptedDump", value: e });
       o.onsuccess = () => {
         console.log("Dump saved successfully."), t.close(), r();
       }, o.onerror = (l) => {
-        console.error("Error saving dump:", l), t.close(), s(l);
+        console.error("Error saving dump:", l), t.close(), a(l);
       };
     });
   }
@@ -182,11 +183,11 @@ const a = class a {
     console.log("Loading with key: 'encryptedDump'");
     const e = await this.initialize();
     return new Promise((t, r) => {
-      const i = e.transaction(this.storeName, "readonly").objectStore(this.storeName).get("encryptedDump");
-      i.onsuccess = () => {
+      const s = e.transaction(this.storeName, "readonly").objectStore(this.storeName).get("encryptedDump");
+      s.onsuccess = () => {
         var o;
-        console.log("Dump retrieved from store:", i.result), e.close(), t(((o = i.result) == null ? void 0 : o.value) || null);
-      }, i.onerror = (o) => {
+        console.log("Dump retrieved from store:", s.result), e.close(), t(((o = s.result) == null ? void 0 : o.value) || null);
+      }, s.onerror = (o) => {
         console.error("Error retrieving dump:", o), e.close(), r(o);
       };
     });
@@ -199,23 +200,24 @@ const a = class a {
       const r = indexedDB.deleteDatabase(this.dbName);
       r.onsuccess = () => {
         console.log("Database deleted successfully."), e();
-      }, r.onerror = (s) => {
-        console.error("Error deleting database:", s), t(s);
+      }, r.onerror = (a) => {
+        console.error("Error deleting database:", a), t(a);
       }, r.onblocked = () => {
         console.warn("Delete database request is blocked.");
       };
     });
   }
-};
-a.dbName = "secured-db", a.storeName = "dumps", a.dbVersion = 1;
-let d = a;
+}
+y.dbName = "secured-db";
+y.storeName = "dumps";
+y.dbVersion = 1;
 export {
-  b as DatabaseManager,
-  u as EncryptionManager,
-  d as StorageManager,
-  f as applyMigrations,
-  g as downloadDatabaseFromServer,
-  h as exportDump,
-  m as importDump,
-  D as uploadDatabaseToServer
+  w as DatabaseManager,
+  d as EncryptionManager,
+  y as StorageManager,
+  b as applyMigrations,
+  f as downloadDatabaseFromServer,
+  u as exportDump,
+  h as importDump,
+  g as uploadDatabaseToServer
 };
