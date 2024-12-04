@@ -4,28 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Database Manager Demo</title>
+
+  <!-- Load the sql.js WebAssembly version from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sql.js@1.7.0/dist/sql-wasm.js"></script>
+
   <script type="module">
-    import { DatabaseManager } from 'https://cdn.jsdelivr.net/npm/sqljs-manager/dist/index.js';
+    import { DatabaseManager } from 'https://cdn.jsdelivr.net/npm/sqljs-manager@1.0.2/dist/sqljs-manager.es.js';
 
     document.addEventListener('DOMContentLoaded', async () => {
       const output = document.getElementById('output');
       const executeButton = document.getElementById('execute');
       const exportButton = document.getElementById('export');
 
-      const dbManager = new DatabaseManager();
+      // Initialize sql.js with the WebAssembly version
+      const SQL = await initSqlJs({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/sql.js@1.7.0/dist/${file}`  // Correct path to .wasm
+      });
 
-      // Initialize database
-      await dbManager.execute(`
-        CREATE TABLE IF NOT EXISTS expenses (
-          id INTEGER PRIMARY KEY,
-          date TEXT,
-          amount REAL
-        )
-      `);
+      // Initialize DatabaseManager with sql.js
+      const dbManager = new DatabaseManager(SQL);
+
+      await dbManager.initialize();
       output.innerText += "Database initialized.\n";
 
       executeButton.addEventListener('click', async () => {
-        // Insert sample data
+        // Insert data
         await dbManager.execute("INSERT INTO expenses (date, amount) VALUES (?, ?)", [
           new Date().toISOString().split('T')[0],
           Math.floor(Math.random() * 100),

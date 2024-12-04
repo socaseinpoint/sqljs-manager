@@ -11,7 +11,7 @@ export class DatabaseManager {
   }
 
   async initialize(schema: string[]): Promise<void> {
-    const SQL = await initSqlJs();
+    const SQL = await initSqlJs({ locateFile: () => '/sql-wasm.wasm' });
     this.db = new SQL.Database();
 
     if (this.encryptionManager) {
@@ -48,7 +48,7 @@ export class DatabaseManager {
       });
     }
 
-    const SQL = await initSqlJs();
+    const SQL = await initSqlJs({ locateFile: () => '/sql-wasm.wasm' });
     this.db = new SQL.Database(decryptedDump as Uint8Array);
   }
 }

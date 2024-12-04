@@ -64,12 +64,12 @@ class d {
     }
   }
 }
-class w {
+class h {
   constructor(e = !1) {
     this.db = null, this.encryptionManager = e ? new d() : null;
   }
   async initialize(e) {
-    const t = await p();
+    const t = await p({ locateFile: () => "/sql-wasm.wasm" });
     this.db = new t.Database(), this.encryptionManager && await this.encryptionManager.generateKey(), e.forEach((r) => this.db.run(r));
   }
   execute(e, t = []) {
@@ -88,7 +88,7 @@ class w {
   async importDatabase(e) {
     let t = e;
     this.encryptionManager && "iv" in e && "encrypted" in e && (t = await this.encryptionManager.decrypt(e));
-    const r = await p();
+    const r = await p({ locateFile: () => "/sql-wasm.wasm" });
     this.db = new r.Database(t);
   }
 }
@@ -114,7 +114,7 @@ async function u(n, e) {
 function c(n) {
   return typeof n == "object" && "iv" in n && "encryptedDump" in n;
 }
-async function h(n, e, t) {
+async function m(n, e, t) {
   let r;
   t && c(e) ? r = await t.decrypt({
     iv: e.iv,
@@ -140,7 +140,7 @@ async function g(n, e) {
 }
 async function f(n, e) {
   const r = await (await fetch(`${e}/download`)).arrayBuffer();
-  await h(n, new Uint8Array(r));
+  await m(n, new Uint8Array(r));
 }
 class y {
   /**
@@ -212,12 +212,12 @@ y.dbName = "secured-db";
 y.storeName = "dumps";
 y.dbVersion = 1;
 export {
-  w as DatabaseManager,
+  h as DatabaseManager,
   d as EncryptionManager,
   y as StorageManager,
   b as applyMigrations,
   f as downloadDatabaseFromServer,
   u as exportDump,
-  h as importDump,
+  m as importDump,
   g as uploadDatabaseToServer
 };

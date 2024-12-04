@@ -1,26 +1,26 @@
-import { defineConfig } from "vite";
-import dts from "vite-plugin-dts";
+import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   build: {
     lib: {
-      entry: "src/index.ts", // Точка входа в ваш пакет
-      name: "sqljs-manager", // Глобальное имя, если используется UMD
-      fileName: (format) => `sqljs-manager.${format}.js`, // Имена файлов
-      formats: ["es", "cjs"], // Форматы сборки: ESM и CommonJS
+      entry: 'src/index.ts',    // Входной файл вашего пакета
+      name: 'sqljsManager',
+      fileName: (format) => `sqljs-manager.${format}.js`,  // Выходные файлы
+      formats: ['es', 'cjs'],   // Форматы, которые будут поддерживаться
     },
     rollupOptions: {
-      external: ["sql.js"], // Укажите внешние зависимости
+      external: ['sql.js'], // Указываем зависимости, которые не включаются в бандл
       output: {
         globals: {
-          "sql.js": "initSqlJs", // Глобальная переменная для UMD
+          'sql.js': 'SQL', // Глобальная переменная для sql.js
         },
       },
     },
   },
   plugins: [
     dts({
-      insertTypesEntry: true, // Генерация `index.d.ts` в папке сборки
+      skipDiagnostics: false,   // Для генерации dts файлов
     }),
   ],
 });
