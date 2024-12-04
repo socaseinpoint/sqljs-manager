@@ -3,7 +3,7 @@ import { EncryptionManager } from "./encryption";
 
 export class DatabaseManager {
   private db: any;
-  private encryptionManager: EncryptionManager | null;
+  protected encryptionManager: EncryptionManager | null;
 
   constructor(useEncryption = false) {
     this.db = null;

@@ -16,9 +16,9 @@ export async function exportDump(
 }
 
 export function isEncryptedDump(
-  dump: Uint8Array | { iv: Uint8Array; encrypted: Uint8Array }
-): dump is { iv: Uint8Array; encrypted: Uint8Array } {
-  return typeof dump === "object" && "iv" in dump && "encrypted" in dump;
+  dump: Uint8Array | { iv: Uint8Array; encryptedDump: Uint8Array }
+): dump is { iv: Uint8Array; encryptedDump: Uint8Array } {
+  return typeof dump === "object" && "iv" in dump && "encryptedDump" in dump;
 }
 
 export async function importDump(
